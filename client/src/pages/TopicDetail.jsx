@@ -2,14 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import API from '../api/axios';
 import Navbar from '../components/Navbar';
-import VideoModal from '../components/VideoModal';
 
 export default function TopicDetail() {
   const { id } = useParams();
   const [topic, setTopic] = useState(null);
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [video, setVideo] = useState(null); // { url, title }
 
   useEffect(() => {
     API.get(`/topics/${id}/problems`)
@@ -160,10 +158,10 @@ export default function TopicDetail() {
                     </a>
                   )}
                   {problem.youtubeUrl && (
-                    <button onClick={() => setVideo({ url: problem.youtubeUrl, title: problem.title })}
-                      style={{ fontSize: 11, fontWeight: 500, padding: '3px 9px', borderRadius: 20, cursor: 'pointer', border: '0.5px solid rgba(163,45,45,0.2)', background: '#fcebeb', color: '#a32d2d', fontFamily: 'inherit' }}>
+                    <a href={problem.youtubeUrl} target="_blank" rel="noopener noreferrer"
+                      style={{ fontSize: 11, fontWeight: 500, padding: '3px 9px', borderRadius: 20, textDecoration: 'none', border: '0.5px solid rgba(163,45,45,0.2)', background: '#fcebeb', color: '#a32d2d' }}>
                       Video
-                    </button>
+                    </a>
                   )}
                   {problem.leetcodeUrl && (
                     <a href={problem.leetcodeUrl} target="_blank" rel="noopener noreferrer"
@@ -178,9 +176,6 @@ export default function TopicDetail() {
         </div>
       </div>
 
-      {video && (
-        <VideoModal url={video.url} title={video.title} onClose={() => setVideo(null)} />
-      )}
     </div>
   );
 }
