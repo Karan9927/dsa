@@ -51,7 +51,7 @@ export default function VideoModal({ url, title, onClose }) {
         {/* Video */}
         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
           <iframe
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+            src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&origin=${window.location.origin}`}
             title={title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
