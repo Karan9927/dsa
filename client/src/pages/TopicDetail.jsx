@@ -46,7 +46,7 @@ export default function TopicDetail() {
     <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", background: 'var(--color-background-tertiary)', minHeight: '100vh' }}>
       <Navbar />
 
-      <div style={{ padding: 24, maxWidth: 860, margin: '0 auto' }}>
+      <div className="page-container" style={{ padding: 24, maxWidth: 860, margin: '0 auto' }}>
         {/* Back */}
         <Link to="/" style={{
           display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13,
@@ -57,7 +57,7 @@ export default function TopicDetail() {
         </Link>
 
         {/* Topic Header */}
-        <div style={{
+        <div className="topic-header" style={{
           background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)',
           borderRadius: 16, padding: '20px 22px', display: 'flex', alignItems: 'center',
           justifyContent: 'space-between', marginBottom: 18,
@@ -85,9 +85,8 @@ export default function TopicDetail() {
         {/* Problem Table */}
         <div style={{ background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)', borderRadius: 16, overflow: 'hidden' }}>
           {/* Header */}
-          <div style={{
-            display: 'grid', gridTemplateColumns: '36px 1fr 90px 200px', gap: 12,
-            padding: '11px 18px', borderBottom: '0.5px solid var(--color-border-tertiary)',
+          <div className="problem-header" style={{
+            borderBottom: '0.5px solid var(--color-border-tertiary)',
           }}>
             {['done', 'problem', 'level', 'resources'].map((h) => (
               <div key={h} style={{ fontSize: 11, fontWeight: 500, color: 'var(--color-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>{h}</div>
@@ -103,21 +102,19 @@ export default function TopicDetail() {
               : { background: '#fcebeb', color: '#a32d2d' };
 
             return (
-              <div key={problem._id} style={{
-                display: 'grid', gridTemplateColumns: '36px 1fr 90px 200px', gap: 12,
-                padding: '13px 18px', borderBottom: index < problems.length - 1 ? '0.5px solid var(--color-border-tertiary)' : 'none',
-                alignItems: 'center', cursor: 'pointer', transition: 'background 0.1s',
-              }}
+              <div key={problem._id} className="problem-row"
+                style={{
+                  borderBottom: index < problems.length - 1 ? '0.5px solid var(--color-border-tertiary)' : 'none',
+                }}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'var(--color-background-secondary)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
 
                 {/* Checkbox */}
-                <div onClick={() => toggleProgress(problem._id)} style={{
+                <div className="problem-checkbox" onClick={() => toggleProgress(problem._id)} style={{
                   width: 20, height: 20, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center',
                   cursor: 'pointer', flexShrink: 0,
                   background: problem.completed ? '#e8590c' : 'transparent',
                   border: problem.completed ? '1.5px solid #e8590c' : '1.5px solid var(--color-border-secondary)',
-                  transform: problem.completed ? 'scale(1)' : 'scale(1)',
                   transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   animation: problem.completed ? 'checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
                 }}>
@@ -127,7 +124,7 @@ export default function TopicDetail() {
                 </div>
 
                 {/* Problem title */}
-                <div>
+                <div className="problem-title">
                   <span style={{ fontSize: 12, color: 'var(--color-text-tertiary)', marginRight: 6 }}>
                     {String(problem.order).padStart(2, '0')}.
                   </span>
@@ -139,8 +136,8 @@ export default function TopicDetail() {
                   </span>
                 </div>
 
-                {/* Badge */}
-                <div>
+                {/* Badge + Resources combined on mobile */}
+                <div className="problem-meta">
                   <span style={{
                     display: 'inline-block', fontSize: 11, fontWeight: 500, padding: '3px 9px', borderRadius: 20,
                     ...diffStyle,
@@ -149,8 +146,7 @@ export default function TopicDetail() {
                   </span>
                 </div>
 
-                {/* Resources */}
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                <div className="problem-meta" style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {problem.articleUrl && (
                     <a href={problem.articleUrl} target="_blank" rel="noopener noreferrer"
                       style={{ fontSize: 11, fontWeight: 500, padding: '3px 9px', borderRadius: 20, textDecoration: 'none', border: '0.5px solid var(--color-border-secondary)', background: 'var(--color-background-secondary)', color: 'var(--color-text-secondary)' }}>

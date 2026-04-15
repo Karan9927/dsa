@@ -54,3 +54,89 @@ body {
 .check-path.drawn {
   animation: drawCheck 0.3s ease forwards 0.1s;
 }
+
+/* ── Responsive ── */
+
+/* Navbar */
+@media (max-width: 640px) {
+  .navbar-user-name { display: none !important; }
+  .navbar-user-pill { padding: 5px 6px !important; }
+  .navbar-signout { padding: 5px 8px !important; font-size: 12px !important; }
+}
+
+/* Dashboard stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Dashboard content padding */
+@media (max-width: 640px) {
+  .page-container { padding: 20px 14px !important; }
+}
+
+/* Topic detail header */
+@media (max-width: 640px) {
+  .topic-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 14px !important;
+  }
+}
+
+/* Problem table: grid on desktop, stacked on mobile */
+.problem-header {
+  display: grid;
+  grid-template-columns: 36px 1fr 90px 200px;
+  gap: 12px;
+  padding: 11px 18px;
+}
+.problem-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 90px 200px;
+  gap: 12px;
+  padding: 13px 18px;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+@media (max-width: 640px) {
+  .problem-header { display: none !important; }
+  .problem-row {
+    grid-template-columns: 28px 1fr !important;
+    grid-template-rows: auto auto;
+    gap: 4px 10px !important;
+    padding: 12px 14px !important;
+  }
+  .problem-row .problem-title { grid-column: 2; }
+  .problem-row .problem-badge { grid-column: 2; }
+  .problem-row .problem-resources { grid-column: 2; }
+  .problem-row .problem-checkbox { grid-row: 1 / 3; align-self: center; }
+  .problem-row .problem-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+}
+
+/* Topic cards on mobile */
+@media (max-width: 640px) {
+  .topic-card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 12px 14px !important;
+  }
+  .topic-card .topic-progress {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+  .topic-card .topic-progress-bar { flex: 1; }
+  .topic-card .topic-arrow { display: none !important; }
+}

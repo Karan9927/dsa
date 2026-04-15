@@ -40,7 +40,7 @@ export default function Dashboard() {
     <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", background: 'var(--color-background-tertiary)', minHeight: '100vh' }}>
       <Navbar />
 
-      <div style={{ padding: '28px 24px', maxWidth: 860, margin: '0 auto' }}>
+      <div className="page-container" style={{ padding: '28px 24px', maxWidth: 860, margin: '0 auto' }}>
         {/* Greeting */}
         <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--color-text-primary)', marginBottom: 4 }}>
           {greeting()}, {user?.name?.split(' ')[0] || 'there'}
@@ -50,7 +50,7 @@ export default function Dashboard() {
         </p>
 
         {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 12, marginBottom: 28 }}>
+        <div className="stats-grid">
           <StatCard label="Total" value={totalProblems} />
           <StatCard label="Solved" value={totalCompleted} orange />
           <StatCard label="Remaining" value={totalProblems - totalCompleted} />
@@ -77,6 +77,7 @@ export default function Dashboard() {
             const pct = topic.totalProblems > 0 ? Math.round((topic.completedProblems / topic.totalProblems) * 100) : 0;
             return (
               <Link key={topic._id} to={`/topic/${topic._id}`}
+                className="topic-card"
                 style={{
                   background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)',
                   borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14,
@@ -97,8 +98,8 @@ export default function Dashboard() {
                   <div style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginTop: 2 }}>{topic.description}</div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-                  <div style={{ width: 80, height: 4, background: 'var(--color-background-secondary)', borderRadius: 2, overflow: 'hidden' }}>
+                <div className="topic-progress" style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                  <div className="topic-progress-bar" style={{ width: 80, height: 4, background: 'var(--color-background-secondary)', borderRadius: 2, overflow: 'hidden' }}>
                     <div style={{ height: '100%', background: '#e8590c', borderRadius: 2, width: `${pct}%`, transition: 'width 0.3s' }}></div>
                   </div>
                   <span style={{ fontSize: 12, color: 'var(--color-text-secondary)', minWidth: 28, textAlign: 'right' }}>
@@ -106,7 +107,7 @@ export default function Dashboard() {
                   </span>
                 </div>
 
-                <svg style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }} width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <svg className="topic-arrow" style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }} width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <polyline points="5,3 11,8 5,13"/>
                 </svg>
               </Link>

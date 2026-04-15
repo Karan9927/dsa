@@ -37,7 +37,7 @@ export default function Navbar() {
 
         {user && (
           <>
-            <div style={{
+            <div className="navbar-user-pill" style={{
               display: 'flex', alignItems: 'center', gap: 8, background: 'var(--color-background-secondary)',
               border: '0.5px solid var(--color-border-tertiary)', borderRadius: 20, padding: '5px 12px 5px 6px',
             }}>
@@ -48,9 +48,9 @@ export default function Navbar() {
               }}>
                 {user.name.charAt(0).toUpperCase()}{user.name.split(' ')[1]?.charAt(0).toUpperCase() || ''}
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)' }}>{user.name}</span>
+              <span className="navbar-user-name" style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)' }}>{user.name}</span>
             </div>
-            <button onClick={logout} style={{
+            <button className="navbar-signout" onClick={logout} style={{
               background: 'transparent', border: '0.5px solid var(--color-border-secondary)',
               borderRadius: 8, padding: '5px 12px', fontSize: 13, color: 'var(--color-text-secondary)',
               cursor: 'pointer', fontFamily: 'inherit',
