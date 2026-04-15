@@ -2,141 +2,127 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axios';
 import Navbar from '../components/Navbar';
-import { FiChevronRight, FiBookOpen, FiStar, FiTarget } from 'react-icons/fi';
+import { useAuth } from '../context/AuthContext';
 
 export default function Dashboard() {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    API.get('/topics')
-      .then((res) => setTopics(res.data))
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    API.get('/topics').then((res) => setTopics(res.data)).catch(console.error).finally(() => setLoading(false));
   }, []);
 
-  const totalProblems = topics.reduce((sum, t) => sum + t.totalProblems, 0);
-  const totalCompleted = topics.reduce((sum, t) => sum + t.completedProblems, 0);
-  const overallProgress = totalProblems > 0 ? Math.round((totalCompleted / totalProblems) * 100) : 0;
+  const totalProblems = topics.reduce((s, t) => s + t.totalProblems, 0);
+  const totalCompleted = topics.reduce((s, t) => s + t.completedProblems, 0);
+  const overallPct = totalProblems > 0 ? Math.round((totalCompleted / totalProblems) * 100) : 0;
+  const strokeDash = (overallPct / 100) * 100.5;
+
+  const greeting = () => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good morning';
+    if (h < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div style={{ minHeight: '100vh', background: 'var(--color-background-tertiary)' }}>
         <Navbar />
-        <div className="flex items-center justify-center h-[80vh]">
-          <div className="animate-spin rounded-full h-9 w-9 border-[3px] border-orange-500 border-t-transparent"></div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh' }}>
+          <div className="animate-spin" style={{ width: 32, height: 32, border: '3px solid var(--color-border-secondary)', borderTopColor: '#e8590c', borderRadius: '50%' }}></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", background: 'var(--color-background-tertiary)', minHeight: '100vh' }}>
       <Navbar />
 
-      <div className="w-full px-6 lg:px-10 py-8">
-        {/* Hero Header */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
-          <div className="px-8 py-8" style={{ background: 'linear-gradient(135deg, #fff7ed, #fff1e6, #fff)' }}>
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-extrabold text-gray-900 mb-2">
-                  DSA Sheet — A2Z DSA Course
-                </h1>
-                <p className="text-sm text-gray-500 max-w-xl leading-relaxed">
-                  Master Data Structures and Algorithms from basics to advanced. Solve curated problems with video tutorials, articles, and practice links.
-                </p>
-              </div>
+      <div style={{ padding: '28px 24px', maxWidth: 860, margin: '0 auto' }}>
+        {/* Greeting */}
+        <p style={{ fontSize: 20, fontWeight: 500, color: 'var(--color-text-primary)', marginBottom: 4 }}>
+          {greeting()}, {user?.name?.split(' ')[0] || 'there'}
+        </p>
+        <p style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginBottom: 24 }}>
+          Keep going — you're making great progress.
+        </p>
 
-              <div className="flex items-center gap-6 flex-shrink-0">
-                <div className="text-center">
-                  <div className="relative w-20 h-20">
-                    <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#f3f4f6" strokeWidth="6" />
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="#e8590c" strokeWidth="6" strokeLinecap="round"
-                        strokeDasharray={`${overallProgress * 2.136} 213.6`}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-lg font-bold text-gray-900">{overallProgress}%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-3 bg-green-50 rounded-lg px-4 py-2">
-                    <FiTarget size={16} className="text-green-600" />
-                    <div>
-                      <div className="text-xs text-green-600 font-medium">Solved</div>
-                      <div className="text-lg font-bold text-green-700">{totalCompleted}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 bg-orange-50 rounded-lg px-4 py-2">
-                    <FiStar size={16} className="text-orange-600" />
-                    <div>
-                      <div className="text-xs text-orange-600 font-medium">Total</div>
-                      <div className="text-lg font-bold text-orange-700">{totalProblems}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        {/* Stats Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 12, marginBottom: 28 }}>
+          <StatCard label="Total" value={totalProblems} />
+          <StatCard label="Solved" value={totalCompleted} orange />
+          <StatCard label="Remaining" value={totalProblems - totalCompleted} />
+          <div style={{ background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)', borderRadius: 14, padding: 16 }}>
+            <div style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Progress</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <svg width="40" height="40" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="16" fill="none" stroke="var(--color-background-secondary)" strokeWidth="4"/>
+                <circle cx="20" cy="20" r="16" fill="none" stroke="#e8590c" strokeWidth="4"
+                  strokeDasharray="100.5" strokeDashoffset={100.5 - strokeDash} strokeLinecap="round"
+                  transform="rotate(-90 20 20)"/>
+                <text x="20" y="24" textAnchor="middle" fontSize="9" fontWeight="500" fill="#e8590c" fontFamily="Inter,-apple-system,sans-serif">{overallPct}%</text>
+              </svg>
             </div>
           </div>
         </div>
 
-        {/* Topics List */}
-        <div className="space-y-3">
-          {topics.map((topic, index) => {
-            const progress = topic.totalProblems > 0
-              ? Math.round((topic.completedProblems / topic.totalProblems) * 100)
-              : 0;
+        {/* Section Title */}
+        <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--color-text-primary)', marginBottom: 12 }}>Topics</p>
 
+        {/* Topic List */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {topics.map((topic, i) => {
+            const pct = topic.totalProblems > 0 ? Math.round((topic.completedProblems / topic.totalProblems) * 100) : 0;
             return (
-              <Link
-                key={topic._id}
-                to={`/topic/${topic._id}`}
-                className="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-gray-300 transition-all no-underline group"
+              <Link key={topic._id} to={`/topic/${topic._id}`}
+                style={{
+                  background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)',
+                  borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 14,
+                  cursor: 'pointer', textDecoration: 'none', transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-border-secondary)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border-tertiary)'}
               >
-                <div className="flex items-center gap-4 lg:gap-6 px-5 lg:px-8 py-5">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white" style={{ background: 'linear-gradient(135deg, #e8590c, #f76707)' }}>
-                    {String(index + 1).padStart(2, '0')}
-                  </div>
+                <span style={{
+                  background: 'rgba(232,89,12,0.12)', color: '#e8590c', fontSize: 11, fontWeight: 600,
+                  borderRadius: 8, padding: '4px 8px', minWidth: 32, textAlign: 'center', flexShrink: 0,
+                }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
 
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
-                      {topic.name}
-                    </h3>
-                    <p className="text-xs text-gray-400 mt-0.5 truncate">{topic.description}</p>
-                  </div>
-
-                  <div className="hidden sm:flex items-center gap-5 flex-shrink-0">
-                    <div className="relative w-11 h-11">
-                      <svg className="w-11 h-11 -rotate-90" viewBox="0 0 44 44">
-                        <circle cx="22" cy="22" r="18" fill="none" stroke="#f3f4f6" strokeWidth="3" />
-                        <circle cx="22" cy="22" r="18" fill="none" stroke="#e8590c" strokeWidth="3" strokeLinecap="round"
-                          strokeDasharray={`${progress * 1.131} 113.1`}
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-gray-700">{progress}%</span>
-                      </div>
-                    </div>
-
-                    <div className="text-right">
-                      <div className="text-sm font-semibold text-gray-900">
-                        {topic.completedProblems}/{topic.totalProblems}
-                      </div>
-                      <div className="text-[10px] text-gray-400 font-medium">problems</div>
-                    </div>
-                  </div>
-
-                  <FiChevronRight className="text-gray-300 group-hover:text-orange-500 transition-colors flex-shrink-0" size={20} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--color-text-primary)' }}>{topic.name}</div>
+                  <div style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginTop: 2 }}>{topic.description}</div>
                 </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+                  <div style={{ width: 80, height: 4, background: 'var(--color-background-secondary)', borderRadius: 2, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', background: '#e8590c', borderRadius: 2, width: `${pct}%`, transition: 'width 0.3s' }}></div>
+                  </div>
+                  <span style={{ fontSize: 12, color: 'var(--color-text-secondary)', minWidth: 28, textAlign: 'right' }}>
+                    {topic.completedProblems}/{topic.totalProblems}
+                  </span>
+                </div>
+
+                <svg style={{ color: 'var(--color-text-tertiary)', flexShrink: 0 }} width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <polyline points="5,3 11,8 5,13"/>
+                </svg>
               </Link>
             );
           })}
         </div>
       </div>
+    </div>
+  );
+}
+
+function StatCard({ label, value, orange }) {
+  return (
+    <div style={{ background: 'var(--color-background-primary)', border: '0.5px solid var(--color-border-tertiary)', borderRadius: 14, padding: 16 }}>
+      <div style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</div>
+      <div style={{ fontSize: 26, fontWeight: 500, color: orange ? '#e8590c' : 'var(--color-text-primary)' }}>{value}</div>
     </div>
   );
 }
