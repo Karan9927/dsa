@@ -1,41 +1,64 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FiLogOut } from 'react-icons/fi';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { dark, toggle } = useTheme();
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="w-full px-6 lg:px-10">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2.5 no-underline">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ background: 'linear-gradient(135deg, #e8590c, #f76707)' }}>
-              DS
-            </div>
-            <div>
-              <span className="text-base font-bold text-gray-900 block leading-tight">DSA Sheet</span>
-              <span className="text-[10px] text-gray-400 font-medium">A2Z DSA Course</span>
-            </div>
-          </Link>
+    <nav style={{
+      background: 'var(--color-background-primary)',
+      borderBottom: '0.5px solid var(--color-border-tertiary)',
+      padding: '0 24px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      position: 'sticky', top: 0, zIndex: 50,
+    }}>
+      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+          <rect x="4" y="20" width="6" height="12" rx="2" fill="#e8590c" opacity="0.5"/>
+          <rect x="13" y="13" width="6" height="19" rx="2" fill="#e8590c" opacity="0.75"/>
+          <rect x="22" y="7" width="6" height="25" rx="2" fill="#e8590c"/>
+        </svg>
+        <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--color-text-primary)' }}>DSA Sheet</span>
+      </Link>
 
-          {user && (
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:flex items-center gap-2.5 bg-gray-50 rounded-full px-4 py-2">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg, #e8590c, #f76707)' }}>
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-sm font-medium text-gray-700">{user.name}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Theme toggle */}
+        <button onClick={toggle} style={{
+          background: 'var(--color-background-secondary)', border: '0.5px solid var(--color-border-tertiary)',
+          borderRadius: 8, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', color: 'var(--color-text-secondary)',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            {dark ? <><circle cx="8" cy="8" r="3.5"/><line x1="8" y1="1" x2="8" y2="2.5"/><line x1="8" y1="13.5" x2="8" y2="15"/><line x1="1" y1="8" x2="2.5" y2="8"/><line x1="13.5" y1="8" x2="15" y2="8"/></> :
+            <path d="M13 8.5a5.5 5.5 0 0 1-7.5-7.5 6.5 6.5 0 1 0 7.5 7.5z"/>}
+          </svg>
+        </button>
+
+        {user && (
+          <>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 8, background: 'var(--color-background-secondary)',
+              border: '0.5px solid var(--color-border-tertiary)', borderRadius: 20, padding: '5px 12px 5px 6px',
+            }}>
+              <div style={{
+                width: 26, height: 26, borderRadius: '50%', background: 'rgba(232,89,12,0.15)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 11, fontWeight: 600, color: '#e8590c',
+              }}>
+                {user.name.charAt(0).toUpperCase()}{user.name.split(' ')[1]?.charAt(0).toUpperCase() || ''}
               </div>
-              <button
-                onClick={logout}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 transition-all cursor-pointer"
-              >
-                <FiLogOut size={15} />
-              </button>
+              <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text-primary)' }}>{user.name}</span>
             </div>
-          )}
-        </div>
+            <button onClick={logout} style={{
+              background: 'transparent', border: '0.5px solid var(--color-border-secondary)',
+              borderRadius: 8, padding: '5px 12px', fontSize: 13, color: 'var(--color-text-secondary)',
+              cursor: 'pointer', fontFamily: 'inherit',
+            }}>
+              Sign out
+            </button>
+          </>
+        )}
       </div>
     </nav>
   );
