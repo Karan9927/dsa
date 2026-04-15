@@ -14,7 +14,7 @@ const progressRoutes = require('./routes/progress');
 const app = express();
 
 // Security headers
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false, crossOriginResourcePolicy: false, crossOriginOpenerPolicy: false, strictTransportSecurity: false }));
 
 // Gzip compression — reduces payload size by ~70% for JSON responses
 app.use(compression());
