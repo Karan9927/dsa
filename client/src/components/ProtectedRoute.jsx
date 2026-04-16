@@ -15,3 +15,18 @@ export default function ProtectedRoute({ children }) {
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
+
+export function GuestRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent" style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }}></div>
+      </div>
+    );
+  }
+
+  if (user) return <Navigate to="/" replace />;
+  return children;
+}
