@@ -172,7 +172,7 @@ export default function Login() {
                   <div style={{ marginBottom: 14 }}>
                     <label style={labelStyle}>Full name</label>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-                      style={inputStyle} placeholder="Arjun Sharma" required />
+                      style={inputStyle} placeholder="John Doe" required />
                   </div>
                 )}
                 <div style={{ marginBottom: 14 }}>
